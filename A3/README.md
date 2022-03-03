@@ -2,14 +2,14 @@
 <!--- You may delete any comments in this sample README.md file. Update information in this readme file with information from your work, and if there are sections that are marked "[OPTIONAL]" that you do not need in a specific section, simply delete them. Retain the other sections. --->
 # Assignment 3: CSCI 2170, Winter 2022
 
-Date Created: DD MMM YYYY
+Date Created: 02 MAR 2022
 Last Modification Date: DD MMM YYYY
-Gitlab URL: https://git.cs.dal.ca/CORRECT-URL-FOR-YOUR-SUBMISSION
+Gitlab URL: https://git.cs.dal.ca/courses/2022-winter/csci-2170/a3/onaopemipo.git
 
 ## Author(s)
 
-- Full Name: <Your Name Here>
-- Email: email@dal.ca
+- Full Name: Ope Remi-Adelasoye
+- Email: on861917@dal.ca
 
 ## Description
 
@@ -37,5 +37,4 @@ Give examples
 ```
 
 ## Citations/Attributions
-1. Include citations in this format:
-Author/Website URL, Content used from the source, Year published (if available), and Date accessed.
+1. Alberto Piccini. 2007. profile. Retrieved March 3, 2022 from https://www.flickr.com/photos/maestroalberto/2100142795/in/photostream/
