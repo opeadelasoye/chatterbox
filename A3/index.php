@@ -19,7 +19,14 @@
 <body>
 	<br>
     <header>
-		<h2 class="text-center">Login Page</h2>
+		<?php 	
+			if(isset($_SESSION['login-id'])){
+				$pageHeader = "News Feed";
+			}else{
+				$pageHeader = "Login Page";
+			}
+		?>
+		<h2 class="text-center"><?php echo $pageHeader;?></h2>
 	</header>
 	<br>
 
@@ -27,7 +34,11 @@
 		<!-- Content here -->
 		<?php 	
 			if(isset($_SESSION['login-id'])){
-				header("Location: profile.php");
+		?>
+
+		<a href="includes/logout.php">Logout</a>
+	
+		<?php 
 			}else{
 		?>
 
