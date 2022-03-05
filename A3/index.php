@@ -1,6 +1,18 @@
 <?php
+	ini_set('display_errors', 1);
     // Starter file for A3 in CSCI 2170
     session_start();
+
+	$host = "localhost";
+    $username = "root";
+    $password = "root";
+    $dbName = "2170-w22";
+
+    $database = new mysqli($host, $username, $password, $dbName);
+
+    if($database->connect_error){
+        die("Error code: " . $database->connect_errno . "<br>" . $database->connect_error);
+    }
 ?>
 
 <!DOCTYPE html>
@@ -20,25 +32,29 @@
 	<br>
     <header>
 		<?php 	
-			if(isset($_SESSION['login-id'])){
+			if(isset($_SESSION['user-ID'])){
 				$pageHeader = "News Feed";
 			}else{
 				$pageHeader = "Login Page";
 			}
 		?>
-		<h2 class="text-center"><?php echo $pageHeader;?></h2>
+		<h2 class="text-center"><?php echo $pageHeader; ?></h2>
 	</header>
 	<br>
 
     <main class="w-50 mx-auto">
 		<!-- Content here -->
 		<?php 	
-			if(isset($_SESSION['login-id'])){
-		?>
-
-		<a href="includes/logout.php">Logout</a>
-	
-		<?php 
+			if(isset($_SESSION['user-ID'])){
+				echo "<p>Welcome, " . $_SESSION['user-name'] . ". " . "<a href=\"includes/logout.php\">Logout</a></p>";
+				
+				for($i = 0; $i < $_SESSION['user-num-of-posts']; $i++){
+					echo "<br><p>" . $_SESSION['user-feed-post-' . $i + 1 . '-name'] . ": " . $_SESSION['user-feed-post-' . $i + 1] . "</p>";
+					echo "<form>
+							<button class=\"btn btn-danger my-2\" type=\"submit\" id=\"like-button\" color>Like</button>
+							<button class=\"btn btn-dark my-2\" type=\"submit\" id=\"report-button\" >Report</button>	
+						</form><br>";
+				}
 			}else{
 		?>
 
@@ -52,7 +68,7 @@
         		<input type="text" class="form-control" name="password" id="password-input" placeholder="Password">
 			</div>
         	<button class="btn btn-primary my-2" type="submit" id="login-button" >Login</button>
-			</form>
+		</form>
 
 		<?php
 			}
