@@ -37,4 +37,9 @@ Give examples
 ```
 
 ## Citations/Attributions
-1. Alberto Piccini. 2007. profile. Retrieved March 3, 2022 from https://www.flickr.com/photos/maestroalberto/2100142795/in/photostream/
+1. Alberto Piccini. 2007. profile. Retrieved March 2, 2022 from https://www.flickr.com/photos/maestroalberto/2100142795/in/photostream/
+
+2. https://www.php.net/manual/en/function.session-destroy.php, Session Destroy, 2022, March 03, 2022
+
+3. https://getbootstrap.com/docs/4.1/getting-started/introduction/, Bootstrap CDN, 2011, March 03, 2022
+
