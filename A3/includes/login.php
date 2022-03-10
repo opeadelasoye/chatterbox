@@ -17,7 +17,7 @@
     if(isset($_REQUEST["email"]) && isset($_REQUEST["password"])){
         $email = sanitizeData($_POST["email"]);
         $password = sanitizeData($_POST["password"]);
-        $sql = "SELECT cb_user_firstname AS name, cb_login_id as ID
+        $sql = "SELECT *, cb_user_firstname, cb_user_lastname, cb_login_id as ID
                     FROM cb_users
                     JOIN cb_login ON (cb_login_id = cb_user_id)
                     WHERE '$email' = cb_login_email && '$password' = cb_login_password;";
@@ -28,7 +28,10 @@
         $row = $result->fetch_assoc();
 
         $_SESSION['user-ID'] = $row["ID"];
-        $_SESSION['user-name'] = $row["name"];
+        $_SESSION['user-first-name'] = $row["cb_user_firstname"];
+        $_SESSION['user-last-name'] = $row["cb_user_lastname"];
+        $_SESSION['user-email'] = $row["cb_login_email"];
+        $_SESSION['user-password'] = $row["cb_login_password"];
 
         $userID = $row["ID"];
 

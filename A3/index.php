@@ -14,10 +14,6 @@
         die("Error code: " . $database->connect_errno . "<br>" . $database->connect_error);
     }
 
-	$database->query("UPDATE cb_posts
-	SET cb_post_report = 0
-	WHERE cb_post_id = 3 || cb_post_id = 12;");
-
 	$sessionStarted = false;
 	$pageHeader = "Login Page";
 	$id = 0;
@@ -93,7 +89,7 @@
 		<!-- Content here -->
 		<?php 	
 			if($sessionStarted){
-				echo "<p>Welcome, " . $_SESSION['user-name'] . ". " . "<a href=\"includes/logout.php\">Logout</a></p>";
+				echo "<h5 class=\"text-center\">Welcome, " . $_SESSION['user-first-name'] . ". " . "<a href=\"includes/logout.php\">Logout</a> <a href=\"profile.php\">Profile</a></h5>";
 				
 				for($i = 0; $i < $numOfPosts; $i++){
 					$id = $i+1;
@@ -124,7 +120,7 @@
 				<label for="password-input" id="input-label">Password</label>
         		<input type="text" class="form-control" name="password" id="password-input" placeholder="Password">
 			</div>
-        	<button class="btn btn-primary my-2" type="submit" id="login-button" >Login</button>
+        	<button class="btn btn-primary my-2 mx-auto d-block" type="submit" id="login-button" >Login</button>
 		</form>
 
 		<?php
