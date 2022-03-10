@@ -13,6 +13,60 @@
     if($database->connect_error){
         die("Error code: " . $database->connect_errno . "<br>" . $database->connect_error);
     }
+
+	$database->query("UPDATE cb_posts
+	SET cb_post_report = 0
+	WHERE cb_post_id = 3 || cb_post_id = 12;");
+
+	$sessionStarted = false;
+	$pageHeader = "Login Page";
+	$id = 0;
+    $likePressed = false;
+    $reportPressed = false;
+	$postID = null;
+	$sqlLikeCount = "";
+	$likeCount = null;
+	$postReportStatus = null;
+	$userID = null;
+
+	if(isset($_SESSION['user-ID'])){
+		$sessionStarted = true;
+		$pageHeader = "News Feed";
+		$userID = $_SESSION['user-ID'];
+		$numOfPosts = $_SESSION['user-num-of-posts'];
+
+		while((!$likePressed && !$reportPressed) && $id < $numOfPosts){
+			$id++;
+			if(isset($_POST["like-$id"])){
+				$likePressed = true;
+			}else if(isset($_POST["report-$id"])){
+				$reportPressed = true;
+			}
+		}
+	
+		$postID = $_SESSION['user-feed-post-' . $id . '-id'];
+
+		if($likePressed){
+			$database->query("UPDATE cb_posts
+								SET cb_post_likes = cb_post_likes + 1
+								WHERE cb_post_id = $postID;");
+			
+			$sqlLikeCount = "SELECT cb_post_likes
+						FROM cb_posts
+						WHERE cb_post_id = '$postID';";
+			$result = $database->query($sqlLikeCount);
+			$likeCount = $result->fetch_assoc()["cb_post_likes"];
+		}else if($reportPressed){
+			$database->query("UPDATE cb_posts
+								SET cb_post_report = 1
+								WHERE cb_post_id = $postID;");
+			
+			$database->query("INSERT INTO cb_reported_posts VALUES
+								($postID, $userID, 'reported');");
+
+			$_SESSION['user-feed-post-' . $id . '-report-status'] = 1;
+		}
+	}
 ?>
 
 <!DOCTYPE html>
@@ -31,13 +85,6 @@
 <body>
 	<br>
     <header>
-		<?php 	
-			if(isset($_SESSION['user-ID'])){
-				$pageHeader = "News Feed";
-			}else{
-				$pageHeader = "Login Page";
-			}
-		?>
 		<h2 class="text-center"><?php echo $pageHeader; ?></h2>
 	</header>
 	<br>
@@ -45,15 +92,25 @@
     <main class="w-50 mx-auto">
 		<!-- Content here -->
 		<?php 	
-			if(isset($_SESSION['user-ID'])){
+			if($sessionStarted){
 				echo "<p>Welcome, " . $_SESSION['user-name'] . ". " . "<a href=\"includes/logout.php\">Logout</a></p>";
 				
-				for($i = 0; $i < $_SESSION['user-num-of-posts']; $i++){
-					echo "<br><p>" . $_SESSION['user-feed-post-' . $i + 1 . '-name'] . ": " . $_SESSION['user-feed-post-' . $i + 1] . "</p>";
-					echo "<form>
-							<button class=\"btn btn-danger my-2\" type=\"submit\" id=\"like-button\" color>Like</button>
-							<button class=\"btn btn-dark my-2\" type=\"submit\" id=\"report-button\" >Report</button>	
-						</form><br>";
+				for($i = 0; $i < $numOfPosts; $i++){
+					$id = $i+1;
+					echo "<br><p>" . $_SESSION['user-feed-post-' .$id . '-name'] . ": " . $_SESSION['user-feed-post-' . $id] . "</p>";
+					echo "<form method=\"post\" action=\"index.php\">
+							<button class=\"btn btn-danger my-2\" type=\"submit\" id=\"like-button\" name=\"like-$id\">Like</button>";
+					
+					if($_SESSION['user-feed-post-' . $id . '-report-status'] == 0){
+						echo "<button class=\"btn btn-dark my-2\" type=\"submit\" id=\"report-button\" name = \"report-$id\">Report</button>";
+					}else{
+						echo "	&#128681 This post has been reported for community guideline violations.";
+					}		
+						
+					if($likePressed && $_SESSION['user-feed-post-' . $id . '-id'] == $postID){
+						echo "<p>Likes: " . $likeCount . "</p>";
+					}
+					echo "</form><br>";
 				}
 			}else{
 		?>

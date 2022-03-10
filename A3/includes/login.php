@@ -44,6 +44,8 @@
             $numOfPosts++;
             $_SESSION['user-feed-post-' . $numOfPosts] = $row["cb_post_content"];
             $_SESSION['user-feed-post-' . $numOfPosts . '-name'] = $row["name"];
+            $_SESSION['user-feed-post-' . $numOfPosts . '-id'] = $row["cb_post_id"];
+            $_SESSION['user-feed-post-' . $numOfPosts . '-report-status'] = $row["cb_post_report"];
         }
 
         $_SESSION['user-num-of-posts'] = $numOfPosts;
