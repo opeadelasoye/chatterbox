@@ -43,3 +43,4 @@ Give examples
 
 3. https://getbootstrap.com/docs/4.1/getting-started/introduction/, Bootstrap CDN, 2011, March 03, 2022
 
+4. https://www.alt-codes.net/flags, Triangular Flag Code, 2022, March 09, 2022
