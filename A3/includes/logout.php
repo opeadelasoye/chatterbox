@@ -1,4 +1,5 @@
 <?php
+	ini_set('display_errors', 1);
     /* Session destroy/unset functionality used from Example #1 in PHP.net
 	   Authors: PHP.net contributors
 	   URL: https://www.php.net/manual/en/function.session-destroy.php

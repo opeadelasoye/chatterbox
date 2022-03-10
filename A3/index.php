@@ -1,6 +1,5 @@
 <?php
 	ini_set('display_errors', 1);
-    // Starter file for A3 in CSCI 2170
     session_start();
 
 	$host = "localhost";
@@ -24,12 +23,21 @@
 	$likeCount = null;
 	$postReportStatus = null;
 	$userID = null;
+	$userIsAdmin = false;
+	$userIsSuspended = false;
 
 	if(isset($_SESSION['user-ID'])){
 		$sessionStarted = true;
 		$pageHeader = "News Feed";
 		$userID = $_SESSION['user-ID'];
 		$numOfPosts = $_SESSION['user-num-of-posts'];
+
+		if($_SESSION['user-role'] == 0){
+			$userIsAdmin = true;
+		}
+		if($_SESSION['user-suspended'] == 1){
+			$userIsSuspended = true;
+		}
 
 		while((!$likePressed && !$reportPressed) && $id < $numOfPosts){
 			$id++;
@@ -43,23 +51,15 @@
 		$postID = $_SESSION['user-feed-post-' . $id . '-id'];
 
 		if($likePressed){
-			$database->query("UPDATE cb_posts
-								SET cb_post_likes = cb_post_likes + 1
-								WHERE cb_post_id = $postID;");
+			$database->query("UPDATE cb_posts SET cb_post_likes = cb_post_likes + 1 WHERE cb_post_id = $postID;");
 			
-			$sqlLikeCount = "SELECT cb_post_likes
-						FROM cb_posts
-						WHERE cb_post_id = '$postID';";
+			$sqlLikeCount = "SELECT cb_post_likes FROM cb_posts WHERE cb_post_id = '$postID';";
 			$result = $database->query($sqlLikeCount);
 			$likeCount = $result->fetch_assoc()["cb_post_likes"];
 		}else if($reportPressed){
-			$database->query("UPDATE cb_posts
-								SET cb_post_report = 1
-								WHERE cb_post_id = $postID;");
-			
-			$database->query("INSERT INTO cb_reported_posts VALUES
-								($postID, $userID, 'reported');");
-
+			$database->query("UPDATE cb_posts SET cb_post_report = 1 WHERE cb_post_id = $postID;");
+			$database->query("INSERT INTO cb_reported_posts VALUES ($postID, $userID, 'reported');");
+			$database->query("UPDATE cb_reported_posts SET cb_reported_post_status = 'reported' WHERE cb_reported_post_id = $postID");
 			$_SESSION['user-feed-post-' . $id . '-report-status'] = 1;
 		}
 	}
@@ -88,8 +88,12 @@
     <main class="w-50 mx-auto">
 		<!-- Content here -->
 		<?php 	
-			if($sessionStarted){
-				echo "<h5 class=\"text-center\">Welcome, " . $_SESSION['user-first-name'] . ". " . "<a href=\"includes/logout.php\">Logout</a> <a href=\"profile.php\">Profile</a></h5>";
+			if($sessionStarted && !$userIsSuspended){
+				echo "<h5 class=\"text-center\">Welcome, " . $_SESSION['user-first-name'] . ". " . "<a href=\"includes/logout.php\">Logout</a> <a href=\"profile.php\">Profile</a>";
+				if($userIsAdmin){
+					echo " <a href=\"admin/dashboard.php\">Admin Dashboard</a>";
+				}
+				echo "</h5>";
 				
 				for($i = 0; $i < $numOfPosts; $i++){
 					$id = $i+1;
@@ -108,6 +112,9 @@
 					}
 					echo "</form><br>";
 				}
+			}else if($userIsSuspended){
+				echo "<h5 class=\"text-center\">Welcome, " . $_SESSION['user-first-name'] . ". " . "<a href=\"includes/logout.php\">Logout</a> <a href=\"profile.php\">Profile</a>";
+				echo "<br><h6>This account is suspended.</h6><br>";
 			}else{
 		?>
 

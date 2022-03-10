@@ -1,7 +1,7 @@
 <?php
+	ini_set('display_errors', 1);
     require_once "includes/functions.php";
 
-	ini_set('display_errors', 1);
     // Starter file for A3 in CSCI 2170
     session_start();
 
@@ -17,6 +17,15 @@
     }
 
     $userID = $_SESSION['user-ID'];
+    $userIsAdmin = false;
+    $userIsSuspended = false;
+
+    if($_SESSION['user-role'] == 0){
+        $userIsAdmin = true;
+    }
+    if($_SESSION['user-suspended'] == 1){
+        $userIsSuspended = true;
+    }
 
     $passwordLength = strlen($_SESSION['user-password']);
     $passwordHidden = "*";
@@ -32,7 +41,6 @@
                     WHERE cb_user_id = '$userID';";
 
         $database->query($sql);
-        header("Location: includes/login.php");
     }
     if(isset($_REQUEST["last-name"]) && $_POST["last-name"] != ""){
         $lastName = sanitizeData($_POST["last-name"]);
@@ -41,7 +49,6 @@
                     WHERE cb_user_id = '$userID';";
                     
         $database->query($sql);
-        header("Location: includes/login.php");
     }
     if(isset($_REQUEST["email"]) && $_POST["email"] != ""){
         $email = sanitizeData($_POST["email"]);
@@ -50,7 +57,6 @@
                     WHERE cb_login_id = '$userID';";
                     
         $database->query($sql);
-        header("Location: includes/login.php");
     }
     if(isset($_REQUEST["password"]) && $_POST["password"] != ""){
         $password = sanitizeData($_POST["password"]);
@@ -59,7 +65,6 @@
                     WHERE cb_login_id = '$userID';";
                     
         $database->query($sql);
-        header("Location: includes/login.php");
     }
 ?>
 
@@ -84,8 +89,12 @@
 	<br>
 
     <main class="w-50 mx-auto">
-        <h5 class="text-center">Welcome, <?php echo $_SESSION['user-first-name'];?>. <a href="includes/logout.php">Logout</a> <a href="index.php">News Feed</a></h5>
+        <h5 class="text-center">Welcome, <?php echo $_SESSION['user-first-name'];?>. <a href="includes/logout.php">Logout</a> <a href="index.php">Feed</a>
+            <?php if($userIsAdmin){ echo " <a href=\"admin/dashboard.php\">Admin Dashboard</a>"; }?>
+        </h5>
 		
+        <?php if($userIsSuspended){ echo "<br><h6>This account is suspended.</h6><br>";}?>
+
         <img src="img/user-profile.jpg" alt="Profile picture template" class="mx-auto d-block">
 
         <form class="mx-auto" style="width: 300px" method="post" action="profile.php" id="user-input">

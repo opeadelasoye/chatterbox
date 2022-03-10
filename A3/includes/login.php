@@ -1,4 +1,5 @@
 <?php
+	ini_set('display_errors', 1);
     require_once "functions.php";
 
     $host = "localhost";
@@ -32,6 +33,8 @@
         $_SESSION['user-last-name'] = $row["cb_user_lastname"];
         $_SESSION['user-email'] = $row["cb_login_email"];
         $_SESSION['user-password'] = $row["cb_login_password"];
+        $_SESSION['user-role'] = $row["cb_user_role"];
+        $_SESSION['user-suspended'] = $row["cb_user_suspended"];
 
         $userID = $row["ID"];
 
