@@ -1,5 +1,11 @@
 <?php
 	ini_set('display_errors', 1);
+
+    $currentPath = $_SERVER['REQUEST_URI'];
+    if(str_contains($currentPath, 'includes')){
+        header("Location: ../index.php");
+    }
+    
     /* Session destroy/unset functionality used from Example #1 in PHP.net
 	   Authors: PHP.net contributors
 	   URL: https://www.php.net/manual/en/function.session-destroy.php

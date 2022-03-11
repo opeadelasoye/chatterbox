@@ -1,23 +1,12 @@
 <?php
 	ini_set('display_errors', 1);
     require_once "../includes/functions.php";
-	session_start();
-
-	$host = "localhost";
-    $username = "root";
-    $password = "root";
-    $dbName = "2170-w22";
-
-    $database = new mysqli($host, $username, $password, $dbName);
+	require_once "../includes/db.php";
 
 	$suspendPressed = false;
 	$clearPressed = false;
 	$deletePressed = false;
 	$id = 0;
-
-    if($database->connect_error){
-        die("Error code: " . $database->connect_errno . "<br>" . $database->connect_error);
-    }
 
 	if($_SESSION['user-role'] == 1){
 		header("Location: ../index.php");
@@ -83,56 +72,9 @@
 	$userIsAdmin = true;
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=1, initial-scale=1.0">
-    <title>Index</title>
-
-	<!-- Link to main css file -->
-	<link href=<?php echo $css;?> rel="stylesheet">
-    <!-- Bootstrap CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-</head>
-
-<body>
-	<nav class="navbar navbar-expand navbar-light" id="navigation">
-        	<a class="navbar-brand">
-            	<img src=<?php echo $img;?> id="logo" alt="Drawing of twitter bird by Oliver Tacke" width="100" height="50">
-        	</a>
-		<?php
-			if($sessionStarted){
-		?>
-        <div class="navbar-nav" id="nav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href=<?php echo $feed;?>>Feed</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href=<?php echo $profile;?>>Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href=<?php echo $logout;?>>Logout</a>
-                </li>
-		<?php
-				if($userIsAdmin){
-		?>
-				<li class="nav-item">
-                    <a class="nav-link" href=<?php echo $dashboard;?>>Dashboard</a>
-                </li>
-            </ul>
-        </div>
-		<?php
-				}
-			}
-		?>
-    </nav>
-	<br>
-    <header>
-        <h2 class="text-center"><?php echo $pageHeader; ?></h2>
-	</header>
-	<br>
+<?php
+	getHeader(true, $css, $img, $pageHeader, $sessionStarted, $feed, $profile, $logout, $dashboard, $userIsAdmin);
+?>
 
     <main class="w-50 mx-auto">
         <?php echo "<h5 class=\"text-center\">Welcome, " . $_SESSION['user-first-name'] . "</h5>";?>
@@ -166,10 +108,6 @@
 
 	</main>    
 
-    <footer class="footer fixed-bottom">
-		<div class="container">
-			<p class="mx-auto">&copy; 2022 | CSCI2170 | Assignment 3 | Ope Adelasoye | <a href="https://www.linkedin.com/in/ope-remi-adelasoye/" id="linkedin">Linkedin</a></p>
-		</div>
-	</footer>
-</body>
-</html>
+<?php
+	getFooter(true);
+?>

@@ -1,17 +1,7 @@
 <?php
 	ini_set('display_errors', 1);
-    session_start();
-
-	$host = "localhost";
-    $username = "root";
-    $password = "root";
-    $dbName = "2170-w22";
-
-    $database = new mysqli($host, $username, $password, $dbName);
-
-    if($database->connect_error){
-        die("Error code: " . $database->connect_errno . "<br>" . $database->connect_error);
-    }
+    require_once "includes/functions.php";
+    require_once "includes/db.php";
 
 	$sessionStarted = false;
 	$pageHeader = "Login Page";
@@ -64,64 +54,17 @@
 		}
 	}
 
+	$css = "css/main.css";
+	$img = "img/logo.jpg";
 	$feed = "index.php";
 	$profile = "profile.php";
 	$logout = "includes/logout.php";
 	$dashboard = "admin/dashboard.php";
-	$img = "img/logo.jpg";
-	$css = "css/main.css";
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=1, initial-scale=1.0">
-    <title>Index</title>
-
-	<!-- Link to main css file -->
-	<link href=<?php echo $css;?> rel="stylesheet">
-    <!-- Bootstrap CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-</head>
-
-<body>
-	<nav class="navbar navbar-expand navbar-light" id="navigation">
-        	<a class="navbar-brand">
-            	<img src=<?php echo $img;?> id="logo" alt="Drawing of twitter bird by Oliver Tacke" width="100" height="50">
-        	</a>
-		<?php
-			if($sessionStarted){
-		?>
-        <div class="navbar-nav" id="nav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href=<?php echo $feed;?>>Feed</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href=<?php echo $profile;?>>Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href=<?php echo $logout;?>>Logout</a>
-                </li>
-		<?php
-				if($userIsAdmin){
-		?>
-				<li class="nav-item">
-                    <a class="nav-link" href=<?php echo $dashboard;?>>Dashboard</a>
-                </li>
-            </ul>
-        </div>
-		<?php
-				}
-			}
-		?>
-    </nav>
-	<br>
-    <header>
-		<h2 class="text-center"><?php echo $pageHeader; ?></h2>
-	</header>
-	<br>
+<?php
+	getHeader(false, $css, $img, $pageHeader, $sessionStarted, $feed, $profile, $logout, $dashboard, $userIsAdmin);
+?>
 
 <main class="w-50 mx-auto">
 	<!-- Content here -->
@@ -148,7 +91,7 @@
 				echo "</form><br>";
 			}
 		}else if($userIsSuspended){
-			echo "<h5 class=\"text-center\">Welcome, " . $_SESSION['user-first-name'] . ". " . "<a href=\"includes/logout.php\">Logout</a> <a href=\"profile.php\">Profile</a>";
+			echo "<h5 class=\"text-center\">Welcome, " . $_SESSION['user-first-name'];
 			echo "<br><h6>This account is suspended.</h6><br>";
 		}else{
 	?>
@@ -170,16 +113,6 @@
 	?>
 </main>    
 
-    <footer class="footer">
-		<div class="row">
-			<div class="col-6">
-				<p>&copy; 2022</p>
-				<p>ChatterBox is a simpler way for users to stay up to date with content. We are still in Beta and at the moment, we have only provided content sharing permissions to some users. You will get access to this feature in the coming days. Thanks for being a part of our journey!</p>
-			</div>
-			<div class="col-6 d-flex justify-content-end">
-				<p><a id="empty-links" href=#>Privacy Policy | </a> <a id="empty-links" href=#>Terms Of Use | </a> <a id="empty-links" href=#>Contact Us</a></p>
-			</div>
-		</div>
-	</footer>
-</body>
-</html>
+<?php
+	getFooter(false);
+?>
