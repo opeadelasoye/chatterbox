@@ -66,6 +66,13 @@
                     
         $database->query($sql);
     }
+
+    $feed = "index.php";
+	$profile = "profile.php";
+	$logout = "includes/logout.php";
+	$dashboard = "admin/dashboard.php";
+    $pageHeader = "Profile";
+    $sessionStarted = true;
 ?>
 
 <!DOCTYPE html>
@@ -82,16 +89,45 @@
 </head>
 
 <body>
+    <nav class="navbar navbar-expand navbar-light" id="navigation">
+        	<a class="navbar-brand">
+            	<img src="img/logo.jpg" id="logo" alt="Drawing of twitter bird by Oliver Tacke" width="100" height="50">
+        	</a>
+		<?php
+			if($sessionStarted){
+		?>
+        <div class="navbar-nav" id="nav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href=<?php echo $feed;?>>Feed</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href=<?php echo $profile;?>>Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href=<?php echo $logout;?>>Logout</a>
+                </li>
+		<?php
+				if($userIsAdmin){
+		?>
+				<li class="nav-item">
+                    <a class="nav-link" href=<?php echo $dashboard;?>>Dashboard</a>
+                </li>
+            </ul>
+        </div>
+		<?php
+				}
+			}
+		?>
+    </nav>
 	<br>
     <header>
-		<h2 class="text-center">Profile Page</h2>
+        <h2 class="text-center"><?php echo $pageHeader; ?></h2>
 	</header>
 	<br>
 
     <main class="w-50 mx-auto">
-        <h5 class="text-center">Welcome, <?php echo $_SESSION['user-first-name'];?>. <a href="includes/logout.php">Logout</a> <a href="index.php">Feed</a>
-            <?php if($userIsAdmin){ echo " <a href=\"admin/dashboard.php\">Admin Dashboard</a>"; }?>
-        </h5>
+        <?php echo "<h5 class=\"text-center\">Welcome, " . $_SESSION['user-first-name'] . "</h5>"; ?>
 		
         <?php if($userIsSuspended){ echo "<br><h6>This account is suspended.</h6><br>";}?>
 

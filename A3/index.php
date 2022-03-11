@@ -28,7 +28,7 @@
 
 	if(isset($_SESSION['user-ID'])){
 		$sessionStarted = true;
-		$pageHeader = "News Feed";
+		$pageHeader = "Feed";
 		$userID = $_SESSION['user-ID'];
 		$numOfPosts = $_SESSION['user-num-of-posts'];
 
@@ -63,6 +63,13 @@
 			$_SESSION['user-feed-post-' . $id . '-report-status'] = 1;
 		}
 	}
+
+	$feed = "index.php";
+	$profile = "profile.php";
+	$logout = "includes/logout.php";
+	$dashboard = "admin/dashboard.php";
+	$img = "img/logo.jpg";
+	$css = "css/main.css";
 ?>
 
 <!DOCTYPE html>
@@ -73,71 +80,105 @@
     <title>Index</title>
 
 	<!-- Link to main css file -->
-	<link href="css/main.css" rel="stylesheet">
+	<link href=<?php echo $css;?> rel="stylesheet">
     <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 
 <body>
+	<nav class="navbar navbar-expand navbar-light" id="navigation">
+        	<a class="navbar-brand">
+            	<img src=<?php echo $img;?> id="logo" alt="Drawing of twitter bird by Oliver Tacke" width="100" height="50">
+        	</a>
+		<?php
+			if($sessionStarted){
+		?>
+        <div class="navbar-nav" id="nav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href=<?php echo $feed;?>>Feed</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href=<?php echo $profile;?>>Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href=<?php echo $logout;?>>Logout</a>
+                </li>
+		<?php
+				if($userIsAdmin){
+		?>
+				<li class="nav-item">
+                    <a class="nav-link" href=<?php echo $dashboard;?>>Dashboard</a>
+                </li>
+            </ul>
+        </div>
+		<?php
+				}
+			}
+		?>
+    </nav>
 	<br>
     <header>
 		<h2 class="text-center"><?php echo $pageHeader; ?></h2>
 	</header>
 	<br>
 
-    <main class="w-50 mx-auto">
-		<!-- Content here -->
-		<?php 	
-			if($sessionStarted && !$userIsSuspended){
-				echo "<h5 class=\"text-center\">Welcome, " . $_SESSION['user-first-name'] . ". " . "<a href=\"includes/logout.php\">Logout</a> <a href=\"profile.php\">Profile</a>";
-				if($userIsAdmin){
-					echo " <a href=\"admin/dashboard.php\">Admin Dashboard</a>";
-				}
-				echo "</h5>";
+<main class="w-50 mx-auto">
+	<!-- Content here -->
+	<?php 	
+		if($sessionStarted && !$userIsSuspended){
+			echo "<h5 class=\"text-center\">Welcome, " . $_SESSION['user-first-name'];
+			echo "</h5>";
+			
+			for($i = 0; $i < $numOfPosts; $i++){
+				$id = $i+1;
+				echo "<br><p>" . $_SESSION['user-feed-post-' .$id . '-name'] . ": " . $_SESSION['user-feed-post-' . $id] . "</p>";
+				echo "<form method=\"post\" action=\"index.php\">
+						<button class=\"btn btn-danger my-2\" type=\"submit\" id=\"like-button\" name=\"like-$id\">Like</button>";
 				
-				for($i = 0; $i < $numOfPosts; $i++){
-					$id = $i+1;
-					echo "<br><p>" . $_SESSION['user-feed-post-' .$id . '-name'] . ": " . $_SESSION['user-feed-post-' . $id] . "</p>";
-					echo "<form method=\"post\" action=\"index.php\">
-							<button class=\"btn btn-danger my-2\" type=\"submit\" id=\"like-button\" name=\"like-$id\">Like</button>";
+				if($_SESSION['user-feed-post-' . $id . '-report-status'] == 0){
+					echo "<button class=\"btn btn-dark my-2\" type=\"submit\" id=\"report-button\" name = \"report-$id\">Report</button>";
+				}else{
+					echo "	&#128681 This post has been reported for community guideline violations.";
+				}		
 					
-					if($_SESSION['user-feed-post-' . $id . '-report-status'] == 0){
-						echo "<button class=\"btn btn-dark my-2\" type=\"submit\" id=\"report-button\" name = \"report-$id\">Report</button>";
-					}else{
-						echo "	&#128681 This post has been reported for community guideline violations.";
-					}		
-						
-					if($likePressed && $_SESSION['user-feed-post-' . $id . '-id'] == $postID){
-						echo "<p>Likes: " . $likeCount . "</p>";
-					}
-					echo "</form><br>";
+				if($likePressed && $_SESSION['user-feed-post-' . $id . '-id'] == $postID){
+					echo "<p>Likes: " . $likeCount . "</p>";
 				}
-			}else if($userIsSuspended){
-				echo "<h5 class=\"text-center\">Welcome, " . $_SESSION['user-first-name'] . ". " . "<a href=\"includes/logout.php\">Logout</a> <a href=\"profile.php\">Profile</a>";
-				echo "<br><h6>This account is suspended.</h6><br>";
-			}else{
-		?>
-
-		<form class="mx-auto" style="width: 300px" method="post" action="includes/login.php" id="user-input">
-        	<div class="form-group my-3">
-				<label for="email-input" id="input-label">Email address</label>
-        		<input type="text" class="form-control" name="email" id="email-input" placeholder="Email">
-			</div>
-        	<div class="form-group my-3">
-				<label for="password-input" id="input-label">Password</label>
-        		<input type="text" class="form-control" name="password" id="password-input" placeholder="Password">
-			</div>
-        	<button class="btn btn-primary my-2 mx-auto d-block" type="submit" id="login-button" >Login</button>
-		</form>
-
-		<?php
+				echo "</form><br>";
 			}
-		?>
-	</main>    
+		}else if($userIsSuspended){
+			echo "<h5 class=\"text-center\">Welcome, " . $_SESSION['user-first-name'] . ". " . "<a href=\"includes/logout.php\">Logout</a> <a href=\"profile.php\">Profile</a>";
+			echo "<br><h6>This account is suspended.</h6><br>";
+		}else{
+	?>
 
-    <footer class="footer fixed-bottom">
-		<div class="container">
-			<p class="mx-auto">&copy; 2022 | CSCI2170 | Assignment 3 | Ope Adelasoye | <a href="https://www.linkedin.com/in/ope-remi-adelasoye/" id="linkedin">Linkedin</a></p>
+	<form class="mx-auto" style="width: 300px" method="post" action="includes/login.php" id="user-input">
+    	<div class="form-group my-3">
+			<label for="email-input" id="input-label">Email address</label>
+       		<input type="text" class="form-control" name="email" id="email-input" placeholder="Email">
+		</div>
+       	<div class="form-group my-3">	
+			<label for="password-input" id="input-label">Password</label>
+        	<input type="text" class="form-control" name="password" id="password-input" placeholder="Password">
+		</div>
+        	<button class="btn btn-primary my-2 mx-auto d-block" type="submit" id="login-button" >Login</button>
+	</form>
+
+	<?php
+		}
+	?>
+</main>    
+
+    <footer class="footer">
+		<div class="row">
+			<div class="col-6">
+				<p>&copy; 2022</p>
+				<p>ChatterBox is a simpler way for users to stay up to date with content. We are still in Beta and at the moment, we have only provided content sharing permissions to some users. You will get access to this feature in the coming days. Thanks for being a part of our journey!</p>
+			</div>
+			<div class="col-6 d-flex justify-content-end">
+				<p><a id="empty-links" href=#>Privacy Policy | </a> <a id="empty-links" href=#>Terms Of Use | </a> <a id="empty-links" href=#>Contact Us</a></p>
+			</div>
 		</div>
 	</footer>
 </body>

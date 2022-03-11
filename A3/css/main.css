@@ -1,10 +1,30 @@
 .footer {
-	height: 30px;
 	color: white;
 	background-color: black;
-	text-align: center;
 }
 
 #linkedin{
+	color: white;
+}
+
+#navigation{
+    height: 50px;
+	background-color: lightblue;
+}
+
+.navbar-nav{
+    margin-left: auto;
+    background-color: lightblue;
+}
+
+.nav-item{
+	height: 50px;
+    width: 100px;
+    text-align: center;
+    justify-content: center;
+}
+
+#empty-links{
+	text-decoration: none;
 	color: white;
 }

@@ -19,6 +19,10 @@
         die("Error code: " . $database->connect_errno . "<br>" . $database->connect_error);
     }
 
+	if($_SESSION['user-role'] == 1){
+		header("Location: ../index.php");
+	}
+
 	$sqlNumOfUsers = "SELECT COUNT(cb_user_id) FROM cb_users;";
 	$numOfUsers = $database->query($sqlNumOfUsers);
 	$numOfUsers = $numOfUsers->fetch_assoc()["COUNT(cb_user_id)"];
@@ -66,6 +70,17 @@
 		$database->query($delete);
 		header("Location: dashboard.php");
 	}
+
+	$feed = "../index.php";
+	$profile = "../profile.php";
+	$logout = "../includes/logout.php";
+	$dashboard = "dashboard.php";
+	$pageHeader = "Admin Dashboard";
+	$img = "../img/logo.jpg";
+	$css = "../css/main.css";
+
+	$sessionStarted = true;
+	$userIsAdmin = true;
 ?>
 
 <!DOCTYPE html>
@@ -76,20 +91,51 @@
     <title>Index</title>
 
 	<!-- Link to main css file -->
-	<link href="../css/main.css" rel="stylesheet">
+	<link href=<?php echo $css;?> rel="stylesheet">
     <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 
 <body>
+	<nav class="navbar navbar-expand navbar-light" id="navigation">
+        	<a class="navbar-brand">
+            	<img src=<?php echo $img;?> id="logo" alt="Drawing of twitter bird by Oliver Tacke" width="100" height="50">
+        	</a>
+		<?php
+			if($sessionStarted){
+		?>
+        <div class="navbar-nav" id="nav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href=<?php echo $feed;?>>Feed</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href=<?php echo $profile;?>>Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href=<?php echo $logout;?>>Logout</a>
+                </li>
+		<?php
+				if($userIsAdmin){
+		?>
+				<li class="nav-item">
+                    <a class="nav-link" href=<?php echo $dashboard;?>>Dashboard</a>
+                </li>
+            </ul>
+        </div>
+		<?php
+				}
+			}
+		?>
+    </nav>
 	<br>
     <header>
-		<h2 class="text-center">Admin Dashboard</h2>
+        <h2 class="text-center"><?php echo $pageHeader; ?></h2>
 	</header>
 	<br>
 
     <main class="w-50 mx-auto">
-        <h5 class="text-center">Welcome, <?php echo $_SESSION['user-first-name'] ?>. <a href="../includes/logout.php">Logout</a> <a href="../index.php">Feed</a>  <a href="../profile.php">Profile</a></h5><br>
+        <?php echo "<h5 class=\"text-center\">Welcome, " . $_SESSION['user-first-name'] . "</h5>";?>
 		
         <div class="row">
 			<div class="col-6">
